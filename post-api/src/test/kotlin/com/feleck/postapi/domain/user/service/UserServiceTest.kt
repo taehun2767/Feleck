@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.mockito.Mockito.*
 import java.time.OffsetDateTime
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class UserServiceTest {
@@ -54,6 +55,36 @@ class UserServiceTest {
     }
 
     //TODO update
+
+    @Test
+    fun shouldUpdateSuccessfully(){
+        //given
+        val userId = 1L
+        val user = UserEntity(
+            name = "태훈",
+            email = "abc2767@snu.ac.kr",
+            carName = "아반떼",
+        )
+
+        var updatedName = "바뀐 이름"
+        var updatedEmail = "바뀐 이메일"
+        var updatedCarName = "바뀐 카"
+
+        //when
+        `when`(userEntityJpaRepository.save(user)).thenReturn(user)
+        `when`(userEntityJpaRepository.findById(userId)).thenReturn(Optional.of(user))
+        user.name = updatedName
+        user.email = updatedEmail
+        user.carName = updatedCarName
+
+        val updatedUser = userService.updateUser(userId, updatedName, updatedEmail, updatedCarName)
+
+        //then
+        assertThat(updatedUser).isEqualTo(user)
+        verify(userEntityJpaRepository, times(1)).save(user)
+        verify(userEntityJpaRepository, times(1)).findById(userId)
+    }
+
     //TODO delete
 
     //TODO retrieve
